@@ -8,11 +8,13 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ transform: true }))
 
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: process.env.CORS_ORIGIN
+      ? process.env.CORS_ORIGIN.split(',').map(s => s.trim())
+      : ['http://localhost:3000'],
     credentials: true,
   })
 
-  const port = 3001
+  const port = parseInt(process.env.PORT ?? '3001', 10)
   await app.listen(port)
   console.log(`Server running on http://localhost:${port}`)
 }
