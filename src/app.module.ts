@@ -1,0 +1,18 @@
+import { Module } from '@nestjs/common'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { getDatabaseConfig } from './database/database.config'
+import { ShopModule } from './shop/shop.module'
+import { QueueModule } from './queue/queue.module'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+
+@Module({
+  imports: [
+    TypeOrmModule.forRoot(getDatabaseConfig()),
+    ShopModule,
+    QueueModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
