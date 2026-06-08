@@ -5,6 +5,8 @@ import { ShopModule } from './shop/shop.module'
 import { QueueModule } from './queue/queue.module'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
+import { DataSource } from 'typeorm'
+import { seedDatabase } from './database/database.seed'
 
 @Module({
   imports: [
@@ -15,4 +17,10 @@ import { AppService } from './app.service'
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private dataSource: DataSource) {}
+
+  async onApplicationBootstrap() {
+    await seedDatabase(this.dataSource)
+  }
+}
