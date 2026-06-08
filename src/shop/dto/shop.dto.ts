@@ -1,4 +1,4 @@
-import { IsString, IsBoolean, IsNumber, IsOptional, Min } from 'class-validator'
+import { IsString, IsBoolean, IsNumber, IsOptional, Min, Matches } from 'class-validator'
 
 export class ServiceDto {
   id: string
@@ -12,6 +12,8 @@ export class ShopDto {
   name: string
   tagline: string
   isOpen: boolean
+  openTime: string
+  closeTime: string
   services: ServiceDto[]
   averageServiceTime: number
   nextTokenNumber: number
@@ -30,6 +32,16 @@ export class UpdateShopDto {
   @IsOptional()
   @IsBoolean()
   isOpen?: boolean
+
+  @IsOptional()
+  @IsString()
+  @Matches(/^\d{2}:\d{2}$/, { message: 'openTime must be HH:MM format' })
+  openTime?: string
+
+  @IsOptional()
+  @IsString()
+  @Matches(/^\d{2}:\d{2}$/, { message: 'closeTime must be HH:MM format' })
+  closeTime?: string
 
   @IsOptional()
   @IsNumber()

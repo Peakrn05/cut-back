@@ -24,6 +24,9 @@ export class QueueSummaryDto {
   upNext: QueueTokenDto[]
   estimatedWaitForNew: number
   averageServiceTime: number
+  isQueueFull: boolean
+  openTime: string
+  closeTime: string
 }
 
 export class TakeTokenDto {

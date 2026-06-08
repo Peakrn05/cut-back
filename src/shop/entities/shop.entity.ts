@@ -16,6 +16,12 @@ export class ShopEntity {
   @Column({ default: true })
   isOpen: boolean
 
+  @Column({ default: '09:00' })
+  openTime: string   // "HH:MM" 24h
+
+  @Column({ default: '18:00' })
+  closeTime: string  // "HH:MM" 24h
+
   @Column({ default: 25 })
   averageServiceTime: number
 

@@ -27,6 +27,8 @@ export class ShopService {
     if (dto.name !== undefined) shop.name = dto.name
     if (dto.tagline !== undefined) shop.tagline = dto.tagline
     if (dto.isOpen !== undefined) shop.isOpen = dto.isOpen
+    if (dto.openTime !== undefined) shop.openTime = dto.openTime
+    if (dto.closeTime !== undefined) shop.closeTime = dto.closeTime
     if (dto.averageServiceTime !== undefined) shop.averageServiceTime = dto.averageServiceTime
 
     await this.shopRepo.save(shop)
@@ -39,6 +41,8 @@ export class ShopService {
       name: shop.name,
       tagline: shop.tagline,
       isOpen: shop.isOpen,
+      openTime: shop.openTime,
+      closeTime: shop.closeTime,
       services: shop.services.map(s => ({
         id: s.id,
         name: s.name,

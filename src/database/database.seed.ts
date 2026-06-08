@@ -19,6 +19,8 @@ export const seedDatabase = async (dataSource: DataSource) => {
     name: 'APEX CUTS',
     tagline: 'Precision cuts, no waiting around.',
     isOpen: true,
+    openTime: '09:00',
+    closeTime: '18:00',
     averageServiceTime: 25,
     nextTokenNumber: 49,
     dailyCount: 48,

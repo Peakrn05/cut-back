@@ -31,6 +31,16 @@ export class QueueService {
 
     const estimatedWait = Math.round(remaining + waiting * shop.averageServiceTime)
 
+    // Reject if this customer cannot be fully served before close time
+    if (shop.closeTime) {
+      const minutesToClose = this.minutesUntilTime(shop.closeTime)
+      if (minutesToClose !== null && estimatedWait + shop.averageServiceTime > minutesToClose) {
+        throw new BadRequestException(
+          `Queue is full — we cannot accept more customers before closing at ${this.formatTime12h(shop.closeTime)}`,
+        )
+      }
+    }
+
     const token = this.tokenRepo.create({
       number: tokenNumber,
       displayNumber: this.formatTokenNumber(tokenNumber),
@@ -95,12 +105,23 @@ export class QueueService {
 
     const estimatedWaitForNew = Math.round(remaining + waiting.length * shop.averageServiceTime)
 
+    let isQueueFull = false
+    if (shop.closeTime) {
+      const minutesToClose = this.minutesUntilTime(shop.closeTime)
+      if (minutesToClose !== null && estimatedWaitForNew + shop.averageServiceTime > minutesToClose) {
+        isQueueFull = true
+      }
+    }
+
     return {
       waitingCount: waiting.length,
       currentServing: serving ? this.toDto(serving) : null,
       upNext: upNext.map(t => this.toDto(t)),
       estimatedWaitForNew,
       averageServiceTime: shop.averageServiceTime,
+      isQueueFull,
+      openTime: shop.openTime,
+      closeTime: shop.closeTime,
     }
   }
 
@@ -217,5 +238,21 @@ export class QueueService {
   private minutesSince(date: Date | string): number {
     const d = typeof date === 'string' ? new Date(date) : date
     return Math.floor((Date.now() - d.getTime()) / 60_000)
+  }
+
+  // Returns minutes from now until HH:MM today; null if time has already passed
+  private minutesUntilTime(hhmm: string): number | null {
+    const [h, m] = hhmm.split(':').map(Number)
+    const target = new Date()
+    target.setHours(h, m, 0, 0)
+    const diff = Math.floor((target.getTime() - Date.now()) / 60_000)
+    return diff > 0 ? diff : null
+  }
+
+  private formatTime12h(hhmm: string): string {
+    const [h, m] = hhmm.split(':').map(Number)
+    const suffix = h >= 12 ? 'PM' : 'AM'
+    const hour = h % 12 || 12
+    return `${hour}:${m.toString().padStart(2, '0')} ${suffix}`
   }
 }
