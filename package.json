@@ -8,8 +8,8 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
+    "start": "nest start --port 3001",
+    "start:dev": "nest start --watch --port 3001",
     "start:prod": "node dist/main",
     "typeorm": "typeorm"
   },
