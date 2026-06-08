@@ -1,7 +1,5 @@
-import { IsString, IsOptional, IsEnum } from 'class-validator'
-
-export type ServiceId = 'haircut' | 'beard' | 'haircut-beard' | 'kids' | 'styling'
-export type TokenStatus = 'waiting' | 'called' | 'serving' | 'completed' | 'cancelled' | 'skipped'
+import { IsString, IsOptional, IsIn } from 'class-validator'
+import { SERVICE_IDS, ServiceId, TokenStatus } from '@/common/types/queue.types'
 
 export class QueueTokenDto {
   id: string
@@ -30,7 +28,7 @@ export class QueueSummaryDto {
 }
 
 export class TakeTokenDto {
-  @IsEnum(['haircut', 'beard', 'haircut-beard', 'kids', 'styling'])
+  @IsIn(SERVICE_IDS)
   serviceId: ServiceId
 
   @IsOptional()

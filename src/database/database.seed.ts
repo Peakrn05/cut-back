@@ -1,9 +1,8 @@
 import { DataSource } from 'typeorm'
 import { ShopEntity } from '@/shop/entities/shop.entity'
 import { ServiceEntity } from '@/shop/entities/service.entity'
-import { ServiceId } from '@/shop/entities/service.entity'
 import { QueueTokenEntity } from '@/queue/entities/queue-token.entity'
-import { TokenStatus } from '@/queue/entities/queue-token.entity'
+import { ServiceId, TokenStatus } from '@/common/types/queue.types'
 
 export const seedDatabase = async (dataSource: DataSource) => {
   const shopRepo = dataSource.getRepository(ShopEntity)

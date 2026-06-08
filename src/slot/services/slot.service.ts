@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { SlotReservationEntity } from '../entities/slot-reservation.entity'
 import { ShopEntity } from '@/shop/entities/shop.entity'
+import { ServiceEntity } from '@/shop/entities/service.entity'
 import {
   AvailableSlotsDto,
   ReserveSlotDto,
@@ -17,6 +18,8 @@ export class SlotService {
     private reservationRepo: Repository<SlotReservationEntity>,
     @InjectRepository(ShopEntity)
     private shopRepo: Repository<ShopEntity>,
+    @InjectRepository(ServiceEntity)
+    private serviceRepo: Repository<ServiceEntity>,
   ) {}
 
   async getAvailableSlots(date: string, shopId = 'shop_001'): Promise<AvailableSlotsDto> {
@@ -54,12 +57,14 @@ export class SlotService {
     const shop = await this.shopRepo.findOne({ where: { id: shopId } })
     if (!shop) throw new NotFoundException('Shop not found')
 
-    const validSlots = this.generateSlots(shop.openTime, shop.closeTime, shop.averageServiceTime)
+    const service = await this.serviceRepo.findOne({ where: { id: dto.serviceId, shop_id: shopId } })
+    if (!service) throw new BadRequestException('Service is not available')
+
+    const validSlots = this.generateSlots(shop.openTime, shop.closeTime, service.duration)
     if (!validSlots.includes(dto.timeSlot)) {
-      throw new BadRequestException(`${dto.timeSlot} is not a valid time slot`)
+      throw new BadRequestException(`${dto.timeSlot} is not a valid time slot for ${service.name}`)
     }
 
-    // Block slots that have already passed for today
     if (dto.date === this.todayString()) {
       const [h, m] = dto.timeSlot.split(':').map(Number)
       if (h * 60 + m <= this.todayMinutes()) {
@@ -118,8 +123,16 @@ export class SlotService {
   }
 
   private validateDateNotPast(date: string): void {
-    const today = this.todayString()
-    if (date < today) throw new BadRequestException('Cannot select a past date')
+    const selected = new Date(date)
+    if (Number.isNaN(selected.getTime())) {
+      throw new BadRequestException('Invalid date format')
+    }
+
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    selected.setHours(0, 0, 0, 0)
+
+    if (selected < today) throw new BadRequestException('Cannot select a past date')
   }
 
   private todayString(): string {

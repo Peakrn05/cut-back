@@ -1,8 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Index } from 'typeorm'
 import { ShopEntity } from '@/shop/entities/shop.entity'
-
-export type TokenStatus = 'waiting' | 'called' | 'serving' | 'completed' | 'cancelled' | 'skipped'
-export type ServiceId = 'haircut' | 'beard' | 'haircut-beard' | 'kids' | 'styling'
+import { ServiceId, TokenStatus } from '@/common/types/queue.types'
 
 @Entity('queue_tokens')
 @Index(['shop_id', 'number'], { unique: true })

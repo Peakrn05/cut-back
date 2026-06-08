@@ -1,7 +1,6 @@
 import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm'
 import { ShopEntity } from './shop.entity'
-
-export type ServiceId = 'haircut' | 'beard' | 'haircut-beard' | 'kids' | 'styling'
+import { ServiceId } from '@/common/types/queue.types'
 
 @Entity('services')
 export class ServiceEntity {

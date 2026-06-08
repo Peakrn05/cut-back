@@ -1,7 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Index } from 'typeorm'
 import { ShopEntity } from '@/shop/entities/shop.entity'
-
-export type SlotStatus = 'confirmed' | 'cancelled' | 'completed'
+import { ServiceId, SlotStatus } from '@/common/types/queue.types'
 
 @Entity('slot_reservations')
 @Index(['shop_id', 'date', 'timeSlot'])
@@ -23,7 +22,7 @@ export class SlotReservationEntity {
   timeSlot: string  // HH:MM
 
   @Column()
-  serviceId: string
+  serviceId: ServiceId
 
   @Column()
   customerName: string

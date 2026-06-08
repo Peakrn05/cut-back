@@ -1,4 +1,5 @@
-import { IsString, IsOptional, IsEnum, Matches } from 'class-validator'
+import { IsString, IsOptional, IsIn, Matches } from 'class-validator'
+import { SERVICE_IDS, ServiceId } from '@/common/types/queue.types'
 
 export class TimeSlotDto {
   time: string       // HH:MM
@@ -19,8 +20,8 @@ export class ReserveSlotDto {
   @Matches(/^\d{2}:\d{2}$/, { message: 'timeSlot must be HH:MM' })
   timeSlot: string
 
-  @IsEnum(['haircut', 'beard', 'haircut-beard', 'kids', 'styling'])
-  serviceId: string
+  @IsIn(SERVICE_IDS)
+  serviceId: ServiceId
 
   @IsString()
   customerName: string
@@ -34,7 +35,7 @@ export class SlotReservationDto {
   id: string
   date: string
   timeSlot: string
-  serviceId: string
+  serviceId: ServiceId
   customerName: string
   customerPhone?: string
   status: string
